@@ -1,0 +1,29 @@
+server:
+  port: 8082
+  servlet:
+    context-path: /
+spring:
+  application:
+    name: msg-kafka-producer
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: myGroup
+eureka:
+  instance:
+    instance-id: msg-kafka-producer
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka
+springdoc:
+  api-docs:
+    enabled: true
+    path: /send/api-docs
+  swagger-ui:
+    enabled: true
+    path: /send/swagger-ui.html
+openapi:
+  service:
+    title: 이메일 발송 서비스
+    serviceVersion: 1.0.0
+    url: http://localhost:8000

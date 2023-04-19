@@ -1,0 +1,11 @@
+server:
+  port: 8085
+spring:
+  application:
+    name: tcp-server
+eureka:
+  instance:
+    instance-id: tcp-server
+  clients:
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka

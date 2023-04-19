@@ -1,0 +1,19 @@
+server:
+  port: 8083
+spring:
+  application:
+    name: msg-kafka-consumer
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: myGroup
+eureka:
+  instance:
+    instance-id: msg-kafka-consumer
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka
+my:
+  netty:
+    host: localhost
+    port: 9000
