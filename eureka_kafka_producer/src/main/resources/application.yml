@@ -26,4 +26,4 @@ openapi:
   service:
     title: 이메일 발송 서비스
     serviceVersion: 1.0.0
-    url: http://eureka-kafka-gateway:8000
+    url: http://localhost:8000
