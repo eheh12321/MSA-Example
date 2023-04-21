@@ -53,6 +53,7 @@ public class MessageConsumer {
                     );
                 }
             });
+            System.out.printf(">> 연결할 TCP 서버 정보- Host: {%s}, Port: {%s}", host, port);
             ChannelFuture future = bootstrap.connect(host, port).sync();
             future.channel().closeFuture().sync();
         } catch (InterruptedException e) {

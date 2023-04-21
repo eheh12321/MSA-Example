@@ -7,7 +7,7 @@ eureka:
     instance-id: gateway-service
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://eureka-server:8761/eureka
 spring:
   application:
     name: gateway-service
@@ -27,18 +27,18 @@ springdoc:
     enabled: true
     path: /swagger-ui.html
     urls:
-      - url: /8000
-        name: Spring Cloud Gateway
-        display-name: Spring Cloud Gateway (8000)
+#      - url: /8000
+#        name: Spring Cloud Gateway
+#        display-name: Spring Cloud Gateway (8000)
       - url: /send/api-docs
         name: Kafka producer
         display-name: kafka producer (8082)
-      - url: /8083
-        name: Kafka consumer
-        display-name: kafka consumer (8083)
-      - url: /8085
-        name: tcp server
-        display-name: tcp server (8085)
-      - url: /8761
-        name: eureka server
-        display-name: eureka server (8761)
+#      - url: /8083
+#        name: Kafka consumer
+#        display-name: kafka consumer (8083)
+#      - url: /8085
+#        name: tcp server
+#        display-name: tcp server (8085)
+#      - url: /8761
+#        name: eureka server
+#        display-name: eureka server (8761)

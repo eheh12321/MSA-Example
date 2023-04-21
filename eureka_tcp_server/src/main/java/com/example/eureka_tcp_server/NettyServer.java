@@ -10,6 +10,9 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import lombok.RequiredArgsConstructor;
 
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 
 @RequiredArgsConstructor
@@ -34,8 +37,7 @@ public class NettyServer {
                         }
                     }).option(ChannelOption.SO_BACKLOG, 128)
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
-
-            ChannelFuture future = bootstrap.bind(port).sync();
+            ChannelFuture future = bootstrap.bind(getCurrentIp(), port).sync();
             future.channel().closeFuture().sync();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -43,6 +45,17 @@ public class NettyServer {
         } finally {
             workerGroup.shutdownGracefully();
             bossGroup.shutdownGracefully();
+        }
+    }
+
+    private String getCurrentIp() {
+        try {
+            String hostName = Inet4Address.getLocalHost().getHostName();
+            InetAddress myCurrentIp = Inet4Address.getByName(hostName);
+            System.out.println(">> 현재 내 IP 주소: " + myCurrentIp.getHostAddress());
+            return myCurrentIp.getHostAddress();
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
         }
     }
 }

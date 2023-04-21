@@ -4,7 +4,7 @@ spring:
   application:
     name: msg-kafka-consumer
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: kafka:9092
     consumer:
       group-id: myGroup
 eureka:
@@ -12,8 +12,8 @@ eureka:
     instance-id: msg-kafka-consumer
   client:
     service-url:
-      defaultZone: http://127.0.0.1:8761/eureka
+      defaultZone: http://eureka-server:8761/eureka
 my:
   netty:
-    host: localhost
+    host: eureka-tcp-server
     port: 9000

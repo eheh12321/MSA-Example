@@ -11,8 +11,8 @@
     <groupId>com.example</groupId>
     <artifactId>eureka_kafka_producer</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>eureka_client_2</name>
-    <description>eureka_client_2</description>
+    <name>eureka_kafka_producer</name>
+    <description>eureka_kafka_producer</description>
     <properties>
         <java.version>17</java.version>
         <spring-cloud.version>2022.0.2</spring-cloud.version>
