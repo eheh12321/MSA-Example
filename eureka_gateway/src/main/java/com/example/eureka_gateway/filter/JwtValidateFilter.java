@@ -23,8 +23,9 @@ public class JwtValidateFilter implements GlobalFilter {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         try {
             ServerHttpRequest request = exchange.getRequest();
+            String referer = request.getHeaders().get("Referer").get(0);
             String requestPath = request.getURI().toString().replace("http://localhost:8000/", "");
-            if(requestPath.startsWith("auth/")) { // 인증 서버로 가는 요청에 대해서는 처리 X
+            if(requestPath.startsWith("auth/") || referer.endsWith("/swagger-ui/index.html")) { // 인증 서버, Swagger 요청에 대해서는 처리 X
                 return chain.filter(exchange);
             }
             String jws = request.getHeaders().get("Authorization").get(0);
