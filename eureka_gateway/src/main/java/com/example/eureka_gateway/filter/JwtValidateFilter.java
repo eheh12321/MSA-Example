@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
@@ -21,7 +22,12 @@ public class JwtValidateFilter implements GlobalFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         try {
-            String jws = exchange.getRequest().getHeaders().get("Authorization").get(0);
+            ServerHttpRequest request = exchange.getRequest();
+            String requestPath = request.getURI().toString().replace("http://localhost:8000/", "");
+            if(requestPath.startsWith("auth/")) { // 인증 서버로 가는 요청에 대해서는 처리 X
+                return chain.filter(exchange);
+            }
+            String jws = request.getHeaders().get("Authorization").get(0);
             if (!isValidToken(jws)) {
                 return onError(exchange, HttpStatus.UNAUTHORIZED, "허가되지 않은 토큰입니다.");
             }

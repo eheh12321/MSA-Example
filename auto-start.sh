@@ -47,6 +47,12 @@ if [ $build_flag = true ]; then
   docker build -t ${docker_username}/eureka-tcp-server .
   echo "# Success!"
   sleep 1s
+
+  echo "# Eureka_auth_server Image Build..."
+  cd ../eureka_auth_server
+  docker build -t ${docker_username}/eureka-auth-server .
+  echo "# Success!"
+  sleep 1s
 fi
 
 cd $working_directory

@@ -24,6 +24,7 @@ public class EurekaGatewayApplication {
                 .routes()
                 .route(r -> r.path("/send/api-docs").and().method(HttpMethod.GET).uri("lb://MSG-KAFKA-PRODUCER"))
                 .route(r -> r.path("/send/**").and().method(HttpMethod.POST).uri("lb://MSG-KAFKA-PRODUCER"))
+                .route(r -> r.path("/auth/**").uri("lb://AUTH-SERVER"))
                 .build();
     }
 }

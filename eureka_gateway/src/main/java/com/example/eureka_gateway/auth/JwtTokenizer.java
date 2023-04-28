@@ -3,11 +3,15 @@ package com.example.eureka_gateway.auth;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
+import java.security.Key;
 
+@Slf4j
 @Component
 public class JwtTokenizer {
 
@@ -17,7 +21,7 @@ public class JwtTokenizer {
     // 토큰 파싱
     public Jws<Claims> getClaims(String jws) {
         return Jwts.parserBuilder()
-                .setSigningKey(secretKey.getBytes(StandardCharsets.UTF_8))
+                .setSigningKey(getEncodedSecretKey())
                 .build()
                 .parseClaimsJws(jws);
     }
@@ -27,8 +31,13 @@ public class JwtTokenizer {
         try {
             getClaims(jws);
         } catch (Exception e) {
+            log.error("# 토큰 파싱 실패 - {}", e.getMessage());
             return false;
         }
         return true;
+    }
+
+    private Key getEncodedSecretKey() {
+        return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 }

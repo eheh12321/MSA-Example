@@ -64,3 +64,16 @@ services:
       - eureka-gateway
       - eureka-tcp-server
 
+  eureka-auth-server:
+    image: 'eheh12321/eureka-auth-server'
+    container_name: 'eureka-auth-server'
+    ports:
+      - '9000:9000'
+    healthcheck:
+      test: if netstat -ltn | grep -c "9000"; then echo 0; else echo 1; fi # 0: Success, 1: Unhealthy
+      interval: 10s
+      timeout: 5s
+      retries: 2
+    depends_on:
+      eureka-gateway:
+        condition: service_healthy

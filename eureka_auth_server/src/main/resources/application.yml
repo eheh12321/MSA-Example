@@ -1,0 +1,25 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: auth-server
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 123123123
+            client-secret: 123123123
+            scope:
+              - email
+              - profile
+eureka:
+  instance:
+    instance-id: auth-server
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka
+jwt:
+  secretKey: qweqweqwe123123123qweqweqwe123123123qweqweqwe123123123qweqweqwe123123123qweqweqwe123123123qweqweqwe123123123
+  access-token-expiration-minutes: 360
