@@ -11,15 +11,6 @@ eureka:
 spring:
   application:
     name: gateway-service
-#  cloud:
-#    gateway:
-#      routes:
-#        - id: msg-kafka-producer
-#          predicates:
-#            - Path=/kafka/**
-#          uri: lb://MSG-KAFKA-PRODUCER
-#          filters:
-#            - RewritePath=/kafka/(?<segment>.*), /$\{segment}
 springdoc:
   api-docs:
     enabled: true
@@ -42,3 +33,5 @@ springdoc:
 #      - url: /8761
 #        name: eureka server
 #        display-name: eureka server (8761)
+jwt:
+  secretKey: qweqweqwe123123123qweqweqwe123123123qweqweqwe123123123qweqweqwe123123123qweqweqwe123123123qweqweqwe123123123
