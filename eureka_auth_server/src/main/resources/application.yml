@@ -19,7 +19,18 @@ eureka:
     instance-id: auth-server
   client:
     service-url:
-      defaultZone: http://eureka-server:8761/eureka
+      defaultZone: http://localhost:8761/eureka
 jwt:
   secretKey: qweqweqwe123123123qweqweqwe123123123qweqweqwe123123123qweqweqwe123123123qweqweqwe123123123qweqweqwe123123123
   access-token-expiration-minutes: 360
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: docker
+eureka:
+  clients:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka

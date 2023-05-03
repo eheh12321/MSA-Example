@@ -6,7 +6,7 @@ spring:
   application:
     name: msg-kafka-producer
   kafka:
-    bootstrap-servers: kafka:9092
+    bootstrap-servers: localhost:9092
     consumer:
       group-id: myGroup
 eureka:
@@ -14,7 +14,7 @@ eureka:
     instance-id: msg-kafka-producer
   client:
     service-url:
-      defaultZone: http://eureka-server:8761/eureka
+      defaultZone: http://localhost:8761/eureka
 springdoc:
   api-docs:
     enabled: true
@@ -27,3 +27,16 @@ openapi:
     title: 이메일 발송 서비스
     serviceVersion: 1.0.0
     url: http://localhost:8000
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: docker
+  kafka:
+    bootstrap-servers: kafka:9092
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka
