@@ -3,12 +3,6 @@ server:
 spring:
   application:
     name: tcp-server
-eureka:
-  instance:
-    instance-id: tcp-server
-  clients:
-    service-url:
-      defaultZone: http://localhost:8761/eureka
 
 ---
 
@@ -16,7 +10,3 @@ spring:
   config:
     activate:
       on-profile: docker
-eureka:
-  clients:
-    service-url:
-      defaultZone: http://eureka-server:8761/eureka
