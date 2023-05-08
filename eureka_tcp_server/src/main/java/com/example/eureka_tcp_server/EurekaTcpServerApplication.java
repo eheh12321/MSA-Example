@@ -8,7 +8,5 @@ public class EurekaTcpServerApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(EurekaTcpServerApplication.class, args);
-        new NettyServer(9090).run();
     }
-
 }

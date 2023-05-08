@@ -3,6 +3,10 @@ server:
 spring:
   application:
     name: tcp-server
+my:
+  netty:
+    host: localhost
+    port: 9090
 
 ---
 
