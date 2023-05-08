@@ -12,6 +12,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Component
 @Slf4j
@@ -21,27 +24,25 @@ public class JwtValidateFilter implements GlobalFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        try {
-            ServerHttpRequest request = exchange.getRequest();
-            String referer = request.getHeaders().get("Referer").get(0);
-            String requestPath = request.getURI().toString().replace("http://localhost:8000/", "");
-            if(requestPath.startsWith("auth/") || referer.endsWith("/swagger-ui/index.html")) { // 인증 서버, Swagger 요청에 대해서는 처리 X
-                return chain.filter(exchange);
-            }
-            String jws = request.getHeaders().get("Authorization").get(0);
-            if (!isValidToken(jws)) {
+        ServerHttpRequest request = exchange.getRequest();
+        if (isExceptionRequest(request)) { // 예외 요청인 경우 필터를 거치지 않음
+            return chain.filter(exchange);
+        }
+        Optional<String> auth = getHttpHeader(request, "Authorization");
+        if (auth.isPresent()) { // Authorization 헤더가 있는 경우
+            if (!isValidToken(auth.get())) {
                 return onError(exchange, HttpStatus.UNAUTHORIZED, "허가되지 않은 토큰입니다.");
             }
-        } catch (NullPointerException e) {
+        } else { // Authorization 헤더가 없는 경우
             return onError(exchange, HttpStatus.UNAUTHORIZED, "토큰이 없습니다.");
         }
         return chain.filter(exchange);
     }
 
     private Mono<Void> onError(ServerWebExchange exchange, HttpStatus httpStatus, String errorMsg) {
+        log.error("# Error: {}", errorMsg);
         ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(httpStatus);
-        log.error("# Error: {}", errorMsg);
         return response.setComplete();
     }
 
@@ -50,5 +51,26 @@ public class JwtValidateFilter implements GlobalFilter {
             return false;
         }
         return jwtTokenizer.isValidToken(jws.replace("Bearer ", ""));
+    }
+
+    private boolean isExceptionRequest(ServerHttpRequest request) {
+        Optional<String> referer = getHttpHeader(request, "Referer");
+        Optional<String> host = getHttpHeader(request, "Host");
+        if (referer.isPresent()) {
+            return referer.get().endsWith("/swagger-ui/index.html");
+        }
+        if (host.isPresent()) {
+            String requestPath = request.getURI().toString().replace(String.format("http://%s/", host.get()), "");
+            return requestPath.startsWith("auth/");
+        }
+        return false;
+    }
+
+    private Optional<String> getHttpHeader(ServerHttpRequest request, String headerName) {
+        List<String> headers = request.getHeaders().get(headerName);
+        if (headers == null || headers.size() == 0) {
+            return Optional.empty();
+        }
+        return Optional.of(headers.get(0));
     }
 }
