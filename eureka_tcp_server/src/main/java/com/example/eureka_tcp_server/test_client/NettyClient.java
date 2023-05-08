@@ -10,6 +10,7 @@ import io.netty.handler.codec.string.StringEncoder;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.Scanner;
 
 @Slf4j
@@ -17,6 +18,8 @@ public class NettyClient {
 
     private final EventLoopGroup group;
     private final Bootstrap bootstrap;
+    private final String host;
+    private final int port;
     private static int retryCnt = 0;
 
     public NettyClient() {
@@ -37,6 +40,10 @@ public class NettyClient {
                     }
                 })
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000);
+
+        Map<String, String> env = System.getenv();
+        host = env.get("host");
+        port = Integer.parseInt(env.get("port"));
     }
 
     public Channel connect(final String host, final int port) throws InterruptedException {
@@ -64,28 +71,31 @@ public class NettyClient {
     }
 
     public void close() {
+        log.info(">> 클라이언트를 종료합니다...");
         group.shutdownGracefully();
     }
 
     public static void main(String[] args) throws InterruptedException {
         NettyClient client = new NettyClient();
-
-        Channel channel = client.connect("localhost", 9090);
-        ChannelFuture future;
+        Channel channel = client.connect(client.host, client.port);
         Scanner sc = new Scanner(System.in);
-        while(true) {
-            String str = sc.nextLine();
-            future = channel.writeAndFlush(str);
-            if ("exit".equals(str) || future.isDone()) {
-                future = channel.close().sync();
+        String input;
+        while (true) {
+            input = sc.nextLine();
+            if ("exit".equals(input) || !channel.isActive()) {
+                channel.close().sync();
                 break;
             }
+            channel.writeAndFlush(input).addListener(new ChannelFutureListener() {
+                @Override
+                public void operationComplete(ChannelFuture f) {
+                    if (!f.isSuccess()) {
+                        log.error(">> 데이터 전송 실패...");
+                        f.channel().close();
+                    }
+                }
+            });
         }
-        if (future.isSuccess()) {
-            log.info("연결을 종료합니다.");
-            client.close();
-        } else {
-            log.info("비정상 종료");
-        }
+        client.close();
     }
 }
